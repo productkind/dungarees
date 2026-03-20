@@ -12,7 +12,9 @@
     "@dungarees/rxjs": "*",
     "@dungarees/cli": "*",
     "@dungarees/fs": "*",
-    "rxjs": "^7.8.1"
+    "@dungarees/key-value-stores": "*",
+    "rxjs": "^7.8.1",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "typescript": "^5.9.3",
