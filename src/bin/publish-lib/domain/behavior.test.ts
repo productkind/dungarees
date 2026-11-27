@@ -89,8 +89,8 @@ test('transpile files in subdirectories', async () => {
     }).events$,
   )
   const publishedFiles = service.fileSystem.toJSON()
-  expect(publishedFiles['/dist/index.js']).toBe('console.log("Hello, world!");\n')
-  expect(publishedFiles['/dist/index.d.ts']).toBe('')
+  expect(publishedFiles['/dist/index.js']).toBe('console.log("Hello, world!");\nexport {};\n')
+  expect(publishedFiles['/dist/index.d.ts']).toBe('export {};\n')
   expect(JSON.parse(publishedFiles['/dist/package.json'] ?? '')).toEqual({
     name: 'my-lib',
     version: '1.0.0',
@@ -142,8 +142,8 @@ test('publish single lib', async () => {
 
   expect(events.at(-1)).toEqual(eventCreators.allPublished())
   const publishedFiles = service.fileSystem.toJSON()
-  expect(publishedFiles['/dist/index.js']).toBe('console.log("Single lib");\n')
-  expect(publishedFiles['/dist/index.d.ts']).toBe('')
+  expect(publishedFiles['/dist/index.js']).toBe('console.log("Single lib");\nexport {};\n')
+  expect(publishedFiles['/dist/index.d.ts']).toBe('export {};\n')
   expect(JSON.parse(publishedFiles['/dist/package.json'] ?? '')).toEqual({
     name: 'single-lib',
     version: '0.1.0',

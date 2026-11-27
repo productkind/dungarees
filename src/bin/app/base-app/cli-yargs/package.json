@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "@dungarees/bin-fake-services-cli-yargs": "*",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.3",
     "vitest": "^5.1.2"
   },
   "author": "info@productkind.com",
