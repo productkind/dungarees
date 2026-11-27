@@ -17,8 +17,8 @@
   "author": "info@productkind.com",
   "repository": {
     "type": "git",
-    "url": "https://github.com/productkind/monorepo.git",
-    "directory": "dungarees/src/build-tools"
+    "url": "https://github.com/productkind/dungarees.git",
+    "directory": "src/build-tools"
   },
   "license": "MIT"
 }
