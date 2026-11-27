@@ -6,7 +6,7 @@ const suite = (name) => ({
     `html:../reports/${name}/report.html`,
     'summary',
     'progress-bar',
-    '@cucumber/pretty-formatter',
+    'pretty',
   ],
   formatOptions: { snippetInterface: 'async-await' },
 })
