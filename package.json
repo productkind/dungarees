@@ -4,6 +4,7 @@
   "description": "Workspace root of the dungarees libraries when built on their own, as in the productkind/dungarees mirror",
   "type": "module",
   "scripts": {
+    "publish:libs": "dungarees publish-multi-lib .",
     "test": "vitest",
     "type-check": "tsc --noEmit -p tsconfig.json"
   },
