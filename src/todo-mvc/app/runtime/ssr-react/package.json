@@ -22,7 +22,7 @@
     "vite": "^7.3.6"
   },
   "devDependencies": {
-    "typescript": "^6.0.3",
+    "typescript": "^5.9.3",
     "vite-node": "^3.2.4"
   },
   "author": "info@productkind.com",
