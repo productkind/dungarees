@@ -13,20 +13,20 @@
   },
   "peerDependencies": {
     "@bobcats-coding/skid": "*",
-    "@cucumber/cucumber": "^10.9.0",
+    "@cucumber/cucumber": "^13.3.0",
     "@playwright/test": "^1.54.1",
-    "@testcontainers/postgresql": "^10.28.0",
+    "@testcontainers/postgresql": "^12.2.2",
     "fs-extra": "^11.3.0",
-    "testcontainers": "^10.28.0",
+    "testcontainers": "^12.2.2",
     "vite": "^5.0.12"
   },
   "devDependencies": {
     "@bobcats-coding/skid": "*",
-    "@cucumber/cucumber": "^10.9.0",
+    "@cucumber/cucumber": "^13.3.0",
     "@playwright/test": "^1.54.1",
-    "@testcontainers/postgresql": "^10.28.0",
+    "@testcontainers/postgresql": "^12.2.2",
     "fs-extra": "^11.3.0",
-    "testcontainers": "^10.28.0",
+    "testcontainers": "^12.2.2",
     "vite": "^5.0.12",
     "vitest": "^3.0.2"
   },
