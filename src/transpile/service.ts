@@ -44,7 +44,11 @@ export const createTranspiler = (fileSystem: FileSystemService): Transpiler => {
       sourceMap: false,
       removeComments: false,
       esModuleInterop: true,
-      moduleResolution: ts.ModuleResolutionKind.Node10,
+      moduleResolution: ts.ModuleResolutionKind.Bundler,
+      // Every package ships as an ES module, but a file without imports or exports reads as a script
+      // to TypeScript, which since 6.0 prefixes scripts with "use strict" and offers no way back
+      // after 7.0.
+      moduleDetection: ts.ModuleDetectionKind.Force,
       noResolve: false, // Allow resolving imports between files
       skipLibCheck: true,
       skipDefaultLibCheck: true,
