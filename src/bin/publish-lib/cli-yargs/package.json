@@ -10,6 +10,7 @@
   "dependencies": {
     "@dungarees/bin-publish-lib-domain": "*",
     "@dungarees/cli": "*",
+    "@types/yargs": "^17.0.35",
     "yargs": "^18.0.0"
   },
   "devDependencies": {

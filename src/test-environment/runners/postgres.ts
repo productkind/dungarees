@@ -1,4 +1,5 @@
-import type { Runner } from '@bobcats-coding/skid/test/type.js'
+import type { Runner } from '../test-environment.ts'
+
 import { PostgreSqlContainer, type StartedPostgreSqlContainer } from '@testcontainers/postgresql'
 import type { StartedNetwork } from 'testcontainers'
 import { Wait } from 'testcontainers'

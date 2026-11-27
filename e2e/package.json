@@ -1,5 +1,6 @@
 {
-  "name": "@skid-lib/e2e",
+  "name": "@dungarees/e2e",
+  "private": true,
   "scripts": {
     "test": "npm run test:publish-lib && npm run test:todo-mvc",
     "test:publish-lib": "NODE_OPTIONS=\"--experimental-strip-types\" cucumber-js --profile publishLib",
@@ -10,7 +11,6 @@
   },
   "type": "module",
   "devDependencies": {
-    "@bobcats-coding/skid": "*",
     "@cucumber/cucumber": "^13.3.0",
     "@cucumber/message-streams": "^5.0.1",
     "@cucumber/messages": "^35.0.0",

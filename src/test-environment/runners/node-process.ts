@@ -1,4 +1,6 @@
-import type { Runner } from '@bobcats-coding/skid/test/type.js'
+import { NODE_CONTAINER_IMAGE } from '../constants.ts'
+import type { Runner } from '../test-environment.ts'
+
 import type { StartedNetwork, StartedTestContainer } from 'testcontainers'
 import { GenericContainer, Wait } from 'testcontainers'
 
@@ -16,7 +18,7 @@ export const nodeProcessRunner = (config: NodeProcessRunnerConfig): Runner => {
   const source = 'bindMount' in config ? config.bindMount : config.path
   let runningContainer: StartedTestContainer | undefined
 
-  const container = new GenericContainer('node:24-bullseye')
+  const container = new GenericContainer(NODE_CONTAINER_IMAGE)
     .withWorkingDir('/opt/app')
     .withEnvironment(environment)
     .withExposedPorts(...ports.map((port) => ({ container: port, host: port })))

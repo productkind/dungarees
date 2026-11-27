@@ -13,6 +13,7 @@
     ]
   },
   "devDependencies": {
+    "@types/react": "^19.3.3",
     "react": "^19.1.0",
     "rxjs-marbles": "^7.0.1",
     "typescript": "^5.9.3",

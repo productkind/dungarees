@@ -1,4 +1,5 @@
-import { type Runner } from '@bobcats-coding/skid/test/type.js'
+import type { Runner } from '../test-environment.ts'
+
 import type { ViteDevServer } from 'vite'
 import { createServer } from 'vite'
 

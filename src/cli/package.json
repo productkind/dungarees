@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@dungarees/core": "*",
+    "@types/yargs": "^17.0.35",
     "rxjs": "^7.8.1",
     "yargs": "^18.0.0"
   },
