@@ -1,0 +1,42 @@
+# Lives in the monorepo but only runs in the productkind/dungarees mirror, where this folder is the
+# root. Gives a pull request the checks that can run on this folder alone; lint, formatting and the
+# end-to-end suites run in the monorepo once the pull request is imported there.
+name: Checks
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: checks-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 26
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check
+        run: npm run type-check
+
+      - name: Test
+        run: npx vitest run
+
+      - name: Audit dependencies
+        run: npm run audit-dependencies
