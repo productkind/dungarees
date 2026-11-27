@@ -6,7 +6,7 @@ import { DomainEvent } from '@dungarees/core/event.ts'
 import { lastValueFrom, of } from 'rxjs'
 import { expect, test } from 'vitest'
 
-test('yargs-propmt-app', async () => {
+test('yargs-prompt-app', async () => {
   const app = createYargsPromptApp({
     name: 'test-app',
     route: (yargs) => yargs,
@@ -17,7 +17,7 @@ test('yargs-propmt-app', async () => {
   expect(out).toEqual([{ type: 'exit', code: 0 }])
 })
 
-test('yargs-propmt-app', async () => {
+test('yargs-prompt-app', async () => {
   type AppEvents = DomainEvent<'greet', string>
   const app = createYargsPromptApp<AppEvents>({
     name: 'test-app',
