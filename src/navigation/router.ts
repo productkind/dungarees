@@ -2,17 +2,7 @@ import type { Location } from './service.ts'
 
 import { createCausedError } from '@dungarees/core/error.ts'
 
-import UniversalRouterSyncModule, { type RouteContext } from 'universal-router/sync'
-
-type UniversalRouterSyncConstructor = typeof UniversalRouterSyncModule.default
-
-// universal-router ships CommonJS behind an ESM-style declaration file, so TypeScript types the
-// default import as the whole module namespace while every loader in use here hands over the class
-// itself. Checked at runtime rather than assumed, so both shapes work.
-const UniversalRouterSync: UniversalRouterSyncConstructor =
-  typeof UniversalRouterSyncModule === 'function'
-    ? UniversalRouterSyncModule
-    : UniversalRouterSyncModule.default
+import UniversalRouterSync, { type RouteContext } from 'universal-router/sync'
 
 export type Route = {
   route: string

@@ -9,7 +9,7 @@
   "type": "module",
   "dependencies": {
     "@dungarees/core": "*",
-    "@google-cloud/bigquery": "^8.1.1"
+    "@google-cloud/bigquery": "^9.6.1"
   },
   "devDependencies": {
     "typescript": "^5.9.3",

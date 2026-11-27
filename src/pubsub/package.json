@@ -8,7 +8,7 @@
   },
   "type": "module",
   "dependencies": {
-    "@google-cloud/pubsub": "^4.5.0"
+    "@google-cloud/pubsub": "^6.4.1"
   },
   "devDependencies": {
     "typescript": "^5.9.3",
