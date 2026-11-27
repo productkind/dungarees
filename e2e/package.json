@@ -16,7 +16,7 @@
     "@cucumber/messages": "^35.0.0",
     "@dungarees/test-environment": "*",
     "@playwright/test": "^1.50.0",
-    "@types/node": "^24.0.0",
+    "@types/node": "^26.6.11",
     "allure-cucumberjs": "^3.15.0",
     "fast-glob": "^3.3.2",
     "testcontainers": "^12.2.2",
