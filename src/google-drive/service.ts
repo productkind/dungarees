@@ -8,7 +8,7 @@ import {
 
 import { parseJson } from '@dungarees/zod/json.ts'
 
-import { type drive_v3, google } from 'googleapis'
+import { type drive_v3, auth as googleAuth, drive as googleDrive } from '@googleapis/drive'
 import { readFile } from 'node:fs/promises'
 import { Readable } from 'node:stream'
 import { z } from 'zod'
@@ -101,14 +101,14 @@ export const createGoogleDriveClient = async (
 
   const auth =
     credentials !== undefined
-      ? new google.auth.JWT({
+      ? new googleAuth.JWT({
           email: credentials.client_email,
           key: credentials.private_key,
           scopes: DRIVE_SCOPES,
         })
-      : new google.auth.GoogleAuth({ scopes: DRIVE_SCOPES })
+      : new googleAuth.GoogleAuth({ scopes: DRIVE_SCOPES })
 
-  const drive = google.drive({ version: 'v3', auth })
+  const drive = googleDrive({ version: 'v3', auth })
 
   const createFolder: GoogleDriveClient['createFolder'] = async ({
     name,

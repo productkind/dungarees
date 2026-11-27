@@ -9,7 +9,7 @@
   "type": "module",
   "dependencies": {
     "@dungarees/zod": "*",
-    "googleapis": "^190.0.0",
+    "@googleapis/drive": "^27.1.0",
     "zod": "^4.6.7"
   },
   "devDependencies": {
