@@ -19,7 +19,7 @@ import {
 } from './util.ts'
 
 import { getErrorMessage } from '@dungarees/core/error.ts'
-import { mtest } from '@dungarees/core/marbles-vitest.ts'
+import { marbleTest } from '@dungarees/core/marbles-vitest.ts'
 
 import { catchError, from, lastValueFrom, map, type Observable, of, Subject } from 'rxjs'
 import { expect, expectTypeOf, test } from 'vitest'
@@ -40,7 +40,7 @@ test('asyncFunctionToObservable', async () => {
   expect(await lastValueFrom(result$)).toBe(5)
 })
 
-mtest('syncFunctionToObservable', ({ expect }) => {
+marbleTest('syncFunctionToObservable', ({ expect }) => {
   const syncFn = (a: number, b: number): number => a + b
   const observableFn = syncFunctionToObservable(syncFn)
 
@@ -58,7 +58,7 @@ mtest('syncFunctionToObservable', ({ expect }) => {
   expect(resultError$).toBeObservable('#', {}, new Error('Test error'))
 })
 
-mtest('catchAndRethrow', ({ expect, cold }) => {
+marbleTest('catchAndRethrow', ({ expect, cold }) => {
   const input$ = cold('-#', {}, new Error('Test error'))
 
   const result$ = input$.pipe(
@@ -68,7 +68,7 @@ mtest('catchAndRethrow', ({ expect, cold }) => {
   expect(result$).toBeObservable('-#', {}, new Error('Caught error: Test error'))
 })
 
-mtest('catchValueAndRethrow', ({ expect, cold }) => {
+marbleTest('catchValueAndRethrow', ({ expect, cold }) => {
   const input$ = cold('-#', {}, new Error('Test error'))
 
   const result$ = input$.pipe(
@@ -85,7 +85,7 @@ mtest('catchValueAndRethrow', ({ expect, cold }) => {
   )
 })
 
-mtest('tryPipe no error', ({ expect }) => {
+marbleTest('tryPipe no error', ({ expect }) => {
   const result$ = of(1).pipe(
     tryPipe(
       map((x) => x + 1),
@@ -95,7 +95,7 @@ mtest('tryPipe no error', ({ expect }) => {
   expect(result$).toBeObservable('(2|)', { '2': 2 })
 })
 
-mtest('tryPipe with error', ({ expect }) => {
+marbleTest('tryPipe with error', ({ expect }) => {
   const result$ = of(1).pipe(
     tryPipe(
       map(() => {
@@ -107,7 +107,7 @@ mtest('tryPipe with error', ({ expect }) => {
   expect(result$).toBeObservable('(e|)', { e: 'Error: Test error' })
 })
 
-mtest('tryPipe with error outside', ({ expect }) => {
+marbleTest('tryPipe with error outside', ({ expect }) => {
   const result$ = of(1).pipe(
     map(() => {
       throw new Error('Test error')
@@ -117,19 +117,19 @@ mtest('tryPipe with error outside', ({ expect }) => {
   expect(result$).toBeObservable('#', {}, new Error('Test error'))
 })
 
-mtest('assertMap with valid input', ({ expect }) => {
+marbleTest('assertMap with valid input', ({ expect }) => {
   const input$ = of(30)
   const result$ = input$.pipe(assertMap((age) => age >= 18, 'Age must be at least 18'))
   expect(result$).toBeObservable('(a|)', { a: 30 })
 })
 
-mtest('assertMap with invalid input', ({ expect }) => {
+marbleTest('assertMap with invalid input', ({ expect }) => {
   const input$ = of(10)
   const result$ = input$.pipe(assertMap((age) => age >= 18, 'Age must be at least 18'))
   expect(result$).toBeObservable('#', {}, new Error('Age must be at least 18'))
 })
 
-mtest('assertTypeByGuardMap with valid input', ({ expect }) => {
+marbleTest('assertTypeByGuardMap with valid input', ({ expect }) => {
   const input$: Observable<object> = of({ name: 'John' })
   const result$ = input$.pipe(
     assertTypeByGuardMap(
@@ -146,7 +146,7 @@ mtest('assertTypeByGuardMap with valid input', ({ expect }) => {
   expect(result$).toBeObservable('(a|)', { a: { name: 'John' } })
 })
 
-mtest('assertTypeByGuardMap with invalid input', ({ expect }) => {
+marbleTest('assertTypeByGuardMap with invalid input', ({ expect }) => {
   const input$: Observable<object> = of({ age: 30 })
   const result$ = input$.pipe(
     assertTypeByGuardMap(
@@ -158,7 +158,7 @@ mtest('assertTypeByGuardMap with invalid input', ({ expect }) => {
   expect(result$).toBeObservable('#', {}, new Error('Name is required and must be a string'))
 })
 
-mtest('assertSchemaMap with valid input', ({ expect }) => {
+marbleTest('assertSchemaMap with valid input', ({ expect }) => {
   const input$: Observable<object> = of({ name: 'John' })
   const result$ = input$.pipe(
     assertSchemaMap(z.object({ name: z.string() }), 'Name is required and must be a string'),
@@ -171,7 +171,7 @@ mtest('assertSchemaMap with valid input', ({ expect }) => {
   expect(result$).toBeObservable('(a|)', { a: { name: 'John' } })
 })
 
-mtest('getTransformSet', ({ expect, coldStepAndClose }) => {
+marbleTest('getTransformSet', ({ expect, coldStepAndClose }) => {
   const setterArgument$ = new Subject<number>()
   const getter = () => coldStepAndClose(1)
   const setter = (value: number) => {
@@ -184,7 +184,7 @@ mtest('getTransformSet', ({ expect, coldStepAndClose }) => {
   expect(setterArgument$).toBeObservableStep(2)
 })
 
-mtest('getTransformSet multiple operators', ({ expect, coldStepAndClose }) => {
+marbleTest('getTransformSet multiple operators', ({ expect, coldStepAndClose }) => {
   const getter = () => coldStepAndClose(1)
   const setter = (_: number) => {
     return coldStepAndClose(undefined, 1)
@@ -197,7 +197,7 @@ mtest('getTransformSet multiple operators', ({ expect, coldStepAndClose }) => {
   expect(result$).toBeObservableStepAndClose({ get: 1, set: 4 }, 2)
 })
 
-mtest('getTransformSetContext providing context', ({ expect, coldStepAndClose }) => {
+marbleTest('getTransformSetContext providing context', ({ expect, coldStepAndClose }) => {
   const getter = () => coldStepAndClose(1)
   const setter = (_: number) => {
     return coldStepAndClose(undefined, 1)
@@ -216,7 +216,7 @@ test('SyncFunctionToObservable<FUNC>', () => {
   expectTypeOf<ObservableFunc>().toEqualTypeOf<(a: 1, b: 2) => Observable<3>>()
 })
 
-mtest('getObservableMethodsFromSync', ({ expect }) => {
+marbleTest('getObservableMethodsFromSync', ({ expect }) => {
   const service = {
     addSync: (a: number, b: number): number => a + b,
     multiplySync: (a: number, b: number): number => a * b,
@@ -247,7 +247,7 @@ test('getObservableMethodsFromSync', () => {
   }).toThrow('Method "multiplySync" don\'t exists')
 })
 
-mtest('getObservableMethodsFromSync delay', ({ expect }) => {
+marbleTest('getObservableMethodsFromSync delay', ({ expect }) => {
   const service = {
     addSync: (a: number, b: number): number => a + b,
   }

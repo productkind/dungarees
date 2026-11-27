@@ -227,13 +227,15 @@ export const MARBLES_BOOLEAN = {
   f: false,
 }
 
-export const mtest = (name: string, runner: Runner): void => {
+export const marbleTest = (name: string, runner: Runner): void => {
   test(
     name,
     coreMarbles((m): void | Promise<void> => runner(m)),
   )
 }
 
-mtest.each = <T extends unknown[]>(cases: T[]): ((name: string, runner: Runner<T>) => void) => {
+marbleTest.each = <T extends unknown[]>(
+  cases: T[],
+): ((name: string, runner: Runner<T>) => void) => {
   return (name: string, runner: Runner<T>): void => test.each(cases)(name, coreMarbles(runner))
 }

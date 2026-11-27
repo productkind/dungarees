@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "@dungarees/rxjs": "*",
-    "vitest": "^3.0.2"
+    "vitest": "^5.1.2"
   },
   "author": "info@productkind.com",
   "repository": {

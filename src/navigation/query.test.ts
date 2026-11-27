@@ -2,7 +2,7 @@ import { getStateReadable } from './fake.ts'
 import { navigationQuery } from './query.ts'
 import { createRouter } from './router.ts'
 
-import { mtest } from '@dungarees/core/marbles-vitest.ts'
+import { marbleTest } from '@dungarees/core/marbles-vitest.ts'
 
 import { firstValueFrom, of } from 'rxjs'
 import { expect, test } from 'vitest'
@@ -11,7 +11,7 @@ const LOCATION = { pathname: '/path', search: 'a=1&b=2', hash: 'some' }
 
 const OTHER_LOCATION = { pathname: '/other', search: '', hash: '' }
 
-mtest('location$ reports the location the store holds', ({ expect, cold }) => {
+marbleTest('location$ reports the location the store holds', ({ expect, cold }) => {
   const { location$ } = navigationQuery({
     store: getStateReadable(cold('l', { l: LOCATION })),
   })
@@ -19,7 +19,7 @@ mtest('location$ reports the location the store holds', ({ expect, cold }) => {
   expect(location$).toBeObservable('l', { l: LOCATION })
 })
 
-mtest('route$ reports the route the location resolves to', ({ expect, cold }) => {
+marbleTest('route$ reports the route the location resolves to', ({ expect, cold }) => {
   const { route$ } = navigationQuery({
     store: getStateReadable(
       cold('l', { l: { pathname: '/path/1', search: 'a=1&b=2', hash: 'some' } }),
@@ -48,7 +48,7 @@ test('route$ fails when the location matches no route', async () => {
   await expect(firstValueFrom(route$)).rejects.toThrow('Route not found: "/path"')
 })
 
-mtest('location$ reports each move once and says nothing in between', ({ expect, cold }) => {
+marbleTest('location$ reports each move once and says nothing in between', ({ expect, cold }) => {
   const { location$ } = navigationQuery({
     store: getStateReadable(
       cold('abcd', { a: LOCATION, b: { ...LOCATION }, c: OTHER_LOCATION, d: OTHER_LOCATION }),

@@ -8,11 +8,11 @@
   },
   "type": "module",
   "dependencies": {
-    "vite": "^5.0.12"
+    "vite": "^7"
   },
   "devDependencies": {
     "typescript": "^5.9.3",
-    "vitest": "^3.0.2"
+    "vitest": "^5.1.2"
   },
   "author": "info@productkind.com",
   "repository": {

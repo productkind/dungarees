@@ -1,13 +1,13 @@
 import { createOutDir, getBuildStartEvent, transformPackageJson } from './build-operations.ts'
 import { eventCreators } from './events.ts'
 
-import { mtest } from '@dungarees/core/marbles-vitest.ts'
+import { marbleTest } from '@dungarees/core/marbles-vitest.ts'
 import { createGetTransformSetContextInspector } from '@dungarees/rxjs/fake.ts'
 import { createGetTransformSetContext } from '@dungarees/rxjs/util.ts'
 
 import { of } from 'rxjs'
 
-mtest('create build start event', ({ expect }) => {
+marbleTest('create build start event', ({ expect }) => {
   const startEvent$ = getBuildStartEvent({
     srcDir: './src',
     outDir: './out',
@@ -18,18 +18,18 @@ mtest('create build start event', ({ expect }) => {
     0,
   )
 })
-mtest('create output directory', ({ expect, coldStepAndClose }) => {
+marbleTest('create output directory', ({ expect, coldStepAndClose }) => {
   const createOutDir$ = createOutDir({ createOutDir$: coldStepAndClose(undefined), outDir: '/out' })
   expect(createOutDir$).toBeObservableStepAndClose(eventCreators.outDirCreated({ outDir: '/out' }))
 })
-mtest('create output directory with error', ({ expect, coldError }) => {
+marbleTest('create output directory with error', ({ expect, coldError }) => {
   const input$ = coldError(new Error('Could not create directory'))
   const createOutDir$ = createOutDir({ createOutDir$: input$, outDir: '/out' })
   expect(createOutDir$).toBeObservableError(
     new Error('Error creating output directory (/out): Could not create directory'),
   )
 })
-mtest('transformPackageJson with version from file', ({ expect }) => {
+marbleTest('transformPackageJson with version from file', ({ expect }) => {
   const [transformer, contentInspector$] = createGetTransformSetContextInspector<
     string,
     string,
@@ -53,7 +53,7 @@ mtest('transformPackageJson with version from file', ({ expect }) => {
     JSON.stringify({ name: 'test-lib', version: '1.0.0' }, null, 2),
   )
 })
-mtest('transformPackageJson with exports', ({ expect }) => {
+marbleTest('transformPackageJson with exports', ({ expect }) => {
   const [transformer, contentInspector$] = createGetTransformSetContextInspector<
     string,
     string,
@@ -105,7 +105,7 @@ mtest('transformPackageJson with exports', ({ expect }) => {
     ),
   )
 })
-mtest('transformPackageJson with version override', ({ expect }) => {
+marbleTest('transformPackageJson with version override', ({ expect }) => {
   const [transformer, contentInspector$] = createGetTransformSetContextInspector<
     string,
     string,
@@ -129,7 +129,7 @@ mtest('transformPackageJson with version override', ({ expect }) => {
     JSON.stringify({ name: 'test-lib', version: '2.0.0' }, null, 2),
   )
 })
-mtest('transformPackageJson without version in file or parameter', ({ expect }) => {
+marbleTest('transformPackageJson without version in file or parameter', ({ expect }) => {
   const [transformer] = createGetTransformSetContextInspector<string, string, string>({
     content: JSON.stringify({ name: 'test-lib' }),
   })
@@ -147,7 +147,7 @@ mtest('transformPackageJson without version in file or parameter', ({ expect }) 
     0,
   )
 })
-mtest('transformPackageJson without version in file', ({ expect }) => {
+marbleTest('transformPackageJson without version in file', ({ expect }) => {
   const [transformer, contentInspector$] = createGetTransformSetContextInspector<
     string,
     string,
@@ -171,7 +171,7 @@ mtest('transformPackageJson without version in file', ({ expect }) => {
     JSON.stringify({ name: 'test-lib', version: '2.0.0' }, null, 2),
   )
 })
-mtest('transformPackageJson change bin paths', ({ expect }) => {
+marbleTest('transformPackageJson change bin paths', ({ expect }) => {
   const [transformer, contentInspector$] = createGetTransformSetContextInspector<
     string,
     string,
@@ -207,7 +207,7 @@ mtest('transformPackageJson change bin paths', ({ expect }) => {
     ),
   )
 })
-mtest('transformPackageJson with write error', ({ expect, coldStepAndClose, coldError }) => {
+marbleTest('transformPackageJson with write error', ({ expect, coldStepAndClose, coldError }) => {
   const packageJsonContent = JSON.stringify({ name: 'test-lib', version: '1.0.0' })
   const readFile = () => coldStepAndClose(packageJsonContent)
   const writeFile = () => coldError(new Error('Write failed'))
@@ -227,7 +227,7 @@ mtest('transformPackageJson with write error', ({ expect, coldStepAndClose, cold
     2,
   )
 })
-mtest('transformPackageJson with invalid JSON', ({ expect, coldStepAndClose }) => {
+marbleTest('transformPackageJson with invalid JSON', ({ expect, coldStepAndClose }) => {
   const invalidJson = 'invalid json content'
   const readFile = () => coldStepAndClose(invalidJson)
   const writeFile = () => coldStepAndClose(undefined)
@@ -248,82 +248,88 @@ mtest('transformPackageJson with invalid JSON', ({ expect, coldStepAndClose }) =
     ),
   )
 })
-mtest('transformPackageJson exports declared assets and drops the dungarees key', ({ expect }) => {
-  const [transformer, contentInspector$] = createGetTransformSetContextInspector<
-    string,
-    string,
-    string
-  >({
-    content: JSON.stringify({
-      name: 'test-lib',
-      version: '1.0.0',
-      dungarees: { assets: ['tsconfig.base.json'] },
-    }),
-  })
-
-  const transformPackageJson$ = of([]).pipe(
-    transformPackageJson({
-      fileTransform: transformer,
-      srcDir: '/src',
-      outDir: '/out',
-      version: undefined,
-    }),
-  )
-
-  expect(transformPackageJson$).toBeObservableValueAndClose(
-    eventCreators.packageJsonWritten({ path: '/out', version: '1.0.0' }),
-  )
-  expect(contentInspector$).toBeObservableValue(
-    JSON.stringify(
-      {
+marbleTest(
+  'transformPackageJson exports declared assets and drops the dungarees key',
+  ({ expect }) => {
+    const [transformer, contentInspector$] = createGetTransformSetContextInspector<
+      string,
+      string,
+      string
+    >({
+      content: JSON.stringify({
         name: 'test-lib',
         version: '1.0.0',
-        exports: { './tsconfig.base.json': './tsconfig.base.json' },
-      },
-      null,
-      2,
-    ),
-  )
-})
-mtest('transformPackageJson merges declared assets with the transpiled exports', ({ expect }) => {
-  const [transformer, contentInspector$] = createGetTransformSetContextInspector<
-    string,
-    string,
-    string
-  >({
-    content: JSON.stringify({
-      name: 'test-lib',
-      version: '1.0.0',
-      dungarees: { assets: ['tsconfig.base.json'] },
-    }),
-  })
+        dungarees: { assets: ['tsconfig.base.json'] },
+      }),
+    })
 
-  const transformPackageJson$ = of([
-    { input: '/src/index.ts', output: '/out/index.js', type: '/out/index.d.ts' },
-  ]).pipe(
-    transformPackageJson({
-      fileTransform: transformer,
-      srcDir: '/src',
-      outDir: '/out',
-      version: undefined,
-    }),
-  )
+    const transformPackageJson$ = of([]).pipe(
+      transformPackageJson({
+        fileTransform: transformer,
+        srcDir: '/src',
+        outDir: '/out',
+        version: undefined,
+      }),
+    )
 
-  expect(transformPackageJson$).toBeObservableValueAndClose(
-    eventCreators.packageJsonWritten({ path: '/out', version: '1.0.0' }),
-  )
-  expect(contentInspector$).toBeObservableValue(
-    JSON.stringify(
-      {
-        name: 'test-lib',
-        version: '1.0.0',
-        exports: {
-          './index.ts': { import: './index.js', types: './index.d.ts' },
-          './tsconfig.base.json': './tsconfig.base.json',
+    expect(transformPackageJson$).toBeObservableValueAndClose(
+      eventCreators.packageJsonWritten({ path: '/out', version: '1.0.0' }),
+    )
+    expect(contentInspector$).toBeObservableValue(
+      JSON.stringify(
+        {
+          name: 'test-lib',
+          version: '1.0.0',
+          exports: { './tsconfig.base.json': './tsconfig.base.json' },
         },
-      },
-      null,
-      2,
-    ),
-  )
-})
+        null,
+        2,
+      ),
+    )
+  },
+)
+marbleTest(
+  'transformPackageJson merges declared assets with the transpiled exports',
+  ({ expect }) => {
+    const [transformer, contentInspector$] = createGetTransformSetContextInspector<
+      string,
+      string,
+      string
+    >({
+      content: JSON.stringify({
+        name: 'test-lib',
+        version: '1.0.0',
+        dungarees: { assets: ['tsconfig.base.json'] },
+      }),
+    })
+
+    const transformPackageJson$ = of([
+      { input: '/src/index.ts', output: '/out/index.js', type: '/out/index.d.ts' },
+    ]).pipe(
+      transformPackageJson({
+        fileTransform: transformer,
+        srcDir: '/src',
+        outDir: '/out',
+        version: undefined,
+      }),
+    )
+
+    expect(transformPackageJson$).toBeObservableValueAndClose(
+      eventCreators.packageJsonWritten({ path: '/out', version: '1.0.0' }),
+    )
+    expect(contentInspector$).toBeObservableValue(
+      JSON.stringify(
+        {
+          name: 'test-lib',
+          version: '1.0.0',
+          exports: {
+            './index.ts': { import: './index.js', types: './index.d.ts' },
+            './tsconfig.base.json': './tsconfig.base.json',
+          },
+        },
+        null,
+        2,
+      ),
+    )
+  },
+)

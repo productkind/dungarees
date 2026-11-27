@@ -3,7 +3,7 @@ import { createAppStore, getStateReadable } from './fake.ts'
 import { createTodosService } from './service.ts'
 import type { Todo } from './type.ts'
 
-import { mtest } from '@dungarees/core/marbles-vitest.ts'
+import { marbleTest } from '@dungarees/core/marbles-vitest.ts'
 import { createFakeIdGeneratorBackend } from '@dungarees/id-generator/fake.ts'
 import { createIdGenerator } from '@dungarees/id-generator/service.ts'
 import { createQueryCache } from '@dungarees/query-cache/service.ts'
@@ -34,7 +34,7 @@ const createBehavior = ({
   }
 }
 
-mtest('visibleTodos$ narrows the list to the filter it is handed', ({ expect, cold }) => {
+marbleTest('visibleTodos$ narrows the list to the filter it is handed', ({ expect, cold }) => {
   const { visibleTodos$ } = todosQuery({
     store: getStateReadable(cold('s', { s: { items: [WRITE_TESTS, READ_SPEC] } })),
     filter$: cold('a', { a: 'active' }),
@@ -43,21 +43,24 @@ mtest('visibleTodos$ narrows the list to the filter it is handed', ({ expect, co
   expect(visibleTodos$).toBeObservable('s', { s: [WRITE_TESTS] })
 })
 
-mtest('the counters and flags the footer needs come off the whole list', ({ expect, cold }) => {
-  const store = getStateReadable(cold('s', { s: { items: [WRITE_TESTS, READ_SPEC] } }))
-  const filter$ = cold('a', { a: 'all' as const })
-  const { activeCount$, hasTodos$, hasCompletedTodos$, allCompleted$ } = todosQuery({
-    store,
-    filter$,
-  })
+marbleTest(
+  'the counters and flags the footer needs come off the whole list',
+  ({ expect, cold }) => {
+    const store = getStateReadable(cold('s', { s: { items: [WRITE_TESTS, READ_SPEC] } }))
+    const filter$ = cold('a', { a: 'all' as const })
+    const { activeCount$, hasTodos$, hasCompletedTodos$, allCompleted$ } = todosQuery({
+      store,
+      filter$,
+    })
 
-  expect(activeCount$).toBeObservable('s', { s: 1 })
-  expect(hasTodos$).toBeObservable('s', { s: true })
-  expect(hasCompletedTodos$).toBeObservable('s', { s: true })
-  expect(allCompleted$).toBeObservable('s', { s: false })
-})
+    expect(activeCount$).toBeObservable('s', { s: 1 })
+    expect(hasTodos$).toBeObservable('s', { s: true })
+    expect(hasCompletedTodos$).toBeObservable('s', { s: true })
+    expect(allCompleted$).toBeObservable('s', { s: false })
+  },
+)
 
-mtest('adding a todo gives it a generated id and appends it', ({ expect, coldCall }) => {
+marbleTest('adding a todo gives it a generated id and appends it', ({ expect, coldCall }) => {
   const { behavior } = createBehavior()
   coldCall('-1', {
     1: () => {
@@ -71,7 +74,7 @@ mtest('adding a todo gives it a generated id and appends it', ({ expect, coldCal
   })
 })
 
-mtest('a blank title never becomes a todo', ({ expect, coldCall }) => {
+marbleTest('a blank title never becomes a todo', ({ expect, coldCall }) => {
   const { behavior } = createBehavior()
   coldCall('-1', {
     1: () => {
@@ -82,7 +85,7 @@ mtest('a blank title never becomes a todo', ({ expect, coldCall }) => {
   expect(behavior.visibleTodos$).toBeObservable('0', { 0: [] })
 })
 
-mtest('toggling, editing and destroying reach the list', ({ expect, coldCall }) => {
+marbleTest('toggling, editing and destroying reach the list', ({ expect, coldCall }) => {
   const { behavior } = createBehavior()
   coldCall('-123', {
     1: () => {
@@ -104,7 +107,7 @@ mtest('toggling, editing and destroying reach the list', ({ expect, coldCall }) 
   })
 })
 
-mtest('clearing completed and toggling all reach the list', ({ expect, coldCall }) => {
+marbleTest('clearing completed and toggling all reach the list', ({ expect, coldCall }) => {
   const { behavior } = createBehavior()
   coldCall('-123', {
     1: () => {
@@ -126,7 +129,7 @@ mtest('clearing completed and toggling all reach the list', ({ expect, coldCall 
   })
 })
 
-mtest('destroying removes just the one named', ({ expect, coldCall }) => {
+marbleTest('destroying removes just the one named', ({ expect, coldCall }) => {
   const { behavior } = createBehavior()
   coldCall('-12', {
     1: () => {

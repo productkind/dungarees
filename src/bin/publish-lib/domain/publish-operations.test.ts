@@ -6,7 +6,7 @@ import {
   publishUnlessPublished,
 } from './publish-operations.ts'
 
-import { mtest } from '@dungarees/core/marbles-vitest.ts'
+import { marbleTest } from '@dungarees/core/marbles-vitest.ts'
 import { collectValuesFrom } from '@dungarees/rxjs/util.ts'
 
 import { of, throwError } from 'rxjs'
@@ -42,7 +42,7 @@ const recordingBuildAndPublish = () => {
   }
 }
 
-mtest('publishLib with successful exit code', ({ expect, coldStepAndClose }) => {
+marbleTest('publishLib with successful exit code', ({ expect, coldStepAndClose }) => {
   const publish$ = publishLib({
     publishFactory: () => coldStepAndClose({ exitCode: 0, stderr: undefined }),
     packageDir: 'lib-1',
@@ -52,7 +52,7 @@ mtest('publishLib with successful exit code', ({ expect, coldStepAndClose }) => 
     eventCreators.publishSucceeded({ packageDir: 'lib-1', version: '1.0.0' }),
   )
 })
-mtest('publishLib with failed exit code', ({ expect, coldStepAndClose }) => {
+marbleTest('publishLib with failed exit code', ({ expect, coldStepAndClose }) => {
   const publish$ = publishLib({
     publishFactory: () => coldStepAndClose({ exitCode: 1, stderr: 'Some error' }),
     packageDir: 'lib-1',
@@ -62,7 +62,7 @@ mtest('publishLib with failed exit code', ({ expect, coldStepAndClose }) => {
     eventCreators.publishFailed({ packageDir: 'lib-1', exitCode: 1, stderr: 'Some error' }),
   )
 })
-mtest('publishLib defers executing the command', ({ expect: mexpect, coldStepAndClose }) => {
+marbleTest('publishLib defers executing the command', ({ expect: mexpect, coldStepAndClose }) => {
   let commandExecuted = false
   const publish$ = publishLib({
     publishFactory: () => {
@@ -77,7 +77,7 @@ mtest('publishLib defers executing the command', ({ expect: mexpect, coldStepAnd
     eventCreators.publishSucceeded({ packageDir: 'lib-1', version: '1.0.0' }),
   )
 })
-mtest('publishLib with error', ({ expect, coldError }) => {
+marbleTest('publishLib with error', ({ expect, coldError }) => {
   const input$ = coldError(new Error('Network timeout'))
   const publish$ = publishLib({
     publishFactory: () => input$,
@@ -95,7 +95,7 @@ const readLibFile =
         ? JSON.stringify(version)
         : JSON.stringify({ name: '@org/lib' }),
     )
-mtest('getPackagesToPublish pairs every package it found with the version', ({ expect }) => {
+marbleTest('getPackagesToPublish pairs every package it found with the version', ({ expect }) => {
   const packages$ = getPackagesToPublish({
     dir: '/repo',
     glob: () => of(['/repo/src/lib-1/package.json', '/repo/src/sub/lib-2/package.json']),
@@ -143,7 +143,7 @@ test('getPackagesToPublish ignores installed dependencies', async () => {
     '/repo/src/sub/lib-2/package.json',
   ])
 })
-mtest(
+marbleTest(
   'getPackagesToPublish finishes rather than hanging when there are no package.json paths',
   ({ expect }) => {
     const packages$ = getPackagesToPublish({
@@ -157,7 +157,7 @@ mtest(
     })
   },
 )
-mtest('getPackagesToPublish errors when version.json has no version field', ({ expect }) => {
+marbleTest('getPackagesToPublish errors when version.json has no version field', ({ expect }) => {
   const packages$ = getPackagesToPublish({
     dir: '/repo',
     glob: () => of(['/repo/src/lib-1/package.json']),
@@ -165,7 +165,7 @@ mtest('getPackagesToPublish errors when version.json has no version field', ({ e
   })
   expect(packages$).toBeObservableError(new Error('Version is required in version.json'), 0)
 })
-mtest('getPackagesToPublish errors when version is not a string', ({ expect }) => {
+marbleTest('getPackagesToPublish errors when version is not a string', ({ expect }) => {
   const packages$ = getPackagesToPublish({
     dir: '/repo',
     glob: () => of(['/repo/src/lib-1/package.json']),
@@ -173,7 +173,7 @@ mtest('getPackagesToPublish errors when version is not a string', ({ expect }) =
   })
   expect(packages$).toBeObservableError(new Error('Version is required in version.json'), 0)
 })
-mtest('getPackagesToPublish passes a read failure through unlabelled', ({ expect }) => {
+marbleTest('getPackagesToPublish passes a read failure through unlabelled', ({ expect }) => {
   const packages$ = getPackagesToPublish({
     dir: '/repo',
     glob: () => of(['/repo/src/lib-1/package.json']),
@@ -184,7 +184,7 @@ mtest('getPackagesToPublish passes a read failure through unlabelled', ({ expect
   })
   expect(packages$).toBeObservableError(new Error('Read failed'), 0)
 })
-mtest('getPackagesToPublish errors when version.json is not valid JSON', ({ expect }) => {
+marbleTest('getPackagesToPublish errors when version.json is not valid JSON', ({ expect }) => {
   const packages$ = getPackagesToPublish({
     dir: '/repo',
     glob: () => of(['/repo/src/lib-1/package.json']),
@@ -196,7 +196,7 @@ mtest('getPackagesToPublish errors when version.json is not valid JSON', ({ expe
     0,
   )
 })
-mtest(
+marbleTest(
   'publishAllPackages passes each package event through, then reports all published',
   ({ expect, coldStepAndClose }) => {
     const publishPackage = () =>

@@ -1,4 +1,4 @@
-import { configure, coreMarbles, mtest } from './marbles-vitest.ts'
+import { configure, coreMarbles, marbleTest } from './marbles-vitest.ts'
 
 import { Subject } from 'rxjs'
 import { expect, test } from 'vitest'
@@ -20,18 +20,21 @@ test.each([
   }),
 )
 
-mtest.each([
+marbleTest.each([
   ['tf', 'tf'],
   ['ft', 'ft'],
-])('mtest should work with each', ({ expect, coldBoolean }, a: string, b: string) => {
+])('marbleTest should work with each', ({ expect, coldBoolean }, a: string, b: string) => {
   expect(coldBoolean(a)).toBeObservableBoolean(b)
 })
 
-mtest('mtest runs a marble test without coreMarbles wrapping it', ({ expect, coldBoolean }) => {
-  expect(coldBoolean('tf')).toBeObservableBoolean('tf')
-})
+marbleTest(
+  'marbleTest runs a marble test without coreMarbles wrapping it',
+  ({ expect, coldBoolean }) => {
+    expect(coldBoolean('tf')).toBeObservableBoolean('tf')
+  },
+)
 
-mtest('coldCall invokes the one function its marble names', ({ expect, coldCall }) => {
+marbleTest('coldCall invokes the one function its marble names', ({ expect, coldCall }) => {
   const s = new Subject()
   coldCall('-cc', {
     c: () => {
@@ -41,32 +44,38 @@ mtest('coldCall invokes the one function its marble names', ({ expect, coldCall 
   expect(s).toBeObservable('-cc', { c: 'c' })
 })
 
-mtest('coldCall invokes each function its marble names, in frame order', ({ expect, coldCall }) => {
-  const s = new Subject()
-  coldCall('-cd', {
-    c: () => {
-      s.next('c')
-    },
-    d: () => {
-      s.next('d')
-    },
-  })
-  expect(s).toBeObservable('-cd', { c: 'c', d: 'd' })
-})
+marbleTest(
+  'coldCall invokes each function its marble names, in frame order',
+  ({ expect, coldCall }) => {
+    const s = new Subject()
+    coldCall('-cd', {
+      c: () => {
+        s.next('c')
+      },
+      d: () => {
+        s.next('d')
+      },
+    })
+    expect(s).toBeObservable('-cd', { c: 'c', d: 'd' })
+  },
+)
 
-mtest('coldBoolean turns t and f into true and false', ({ expect, coldBoolean }) => {
+marbleTest('coldBoolean turns t and f into true and false', ({ expect, coldBoolean }) => {
   expect(coldBoolean('tf')).toBeObservable('tf', { t: true, f: false })
 })
 
-mtest('toBeObservableBoolean matches a stream of booleans against t and f', ({ expect, cold }) => {
-  expect(cold('tf', { t: true, f: false })).toBeObservableBoolean('tf')
-})
+marbleTest(
+  'toBeObservableBoolean matches a stream of booleans against t and f',
+  ({ expect, cold }) => {
+    expect(cold('tf', { t: true, f: false })).toBeObservableBoolean('tf')
+  },
+)
 
-mtest('coldValue emits the value its marble names', ({ expect, coldValue }) => {
+marbleTest('coldValue emits the value its marble names', ({ expect, coldValue }) => {
   expect(coldValue('-v', true)).toBeObservableBoolean('-t')
 })
 
-mtest(
+marbleTest(
   'coldValueOrUndefined emits the value for v and undefined for 0',
   ({ expect, coldValueOrUndefined }) => {
     expect(coldValueOrUndefined('-v0', true)).toBeObservable('-t0', {
@@ -76,12 +85,15 @@ mtest(
   },
 )
 
-mtest('coldStep emits the value after as many frames as it was told', ({ expect, coldStep }) => {
-  expect(coldStep(true)).toBeObservableBoolean('-t')
-  expect(coldStep(true, 2)).toBeObservableBoolean('--t')
-})
+marbleTest(
+  'coldStep emits the value after as many frames as it was told',
+  ({ expect, coldStep }) => {
+    expect(coldStep(true)).toBeObservableBoolean('-t')
+    expect(coldStep(true, 2)).toBeObservableBoolean('--t')
+  },
+)
 
-mtest(
+marbleTest(
   'coldStepAndClose emits the value and completes in the same frame',
   ({ expect, coldStepAndClose }) => {
     expect(coldStepAndClose(true)).toBeObservableBoolean('-(t|)')
@@ -89,12 +101,12 @@ mtest(
   },
 )
 
-mtest('coldError errors after as many frames as it was told', ({ expect, coldError }) => {
+marbleTest('coldError errors after as many frames as it was told', ({ expect, coldError }) => {
   expect(coldError(new Error('test error'))).toBeObservable('-#', {}, new Error('test error'))
   expect(coldError(new Error('test error'), 2)).toBeObservable('--#', {}, new Error('test error'))
 })
 
-mtest(
+marbleTest(
   'coldStepAndError emits the value and errors in the same frame',
   ({ expect, coldStepAndError }) => {
     expect(coldStepAndError(true, new Error('test error'))).toBeObservable(
@@ -110,28 +122,28 @@ mtest(
   },
 )
 
-mtest(
+marbleTest(
   'toBeObservableValue matches a value against the marble it is given',
   ({ expect, coldStep }) => {
     expect(coldStep(true)).toBeObservableValue('-v', true)
   },
 )
 
-mtest(
+marbleTest(
   'toBeObservableValue falls back to a single-frame marble when given only a value',
   ({ expect, coldStep }) => {
     expect(coldStep(true, 0)).toBeObservableValue(true)
   },
 )
 
-mtest(
+marbleTest(
   'toBeObservableValueAndClose matches a value followed by completion',
   ({ expect, coldStepAndClose }) => {
     expect(coldStepAndClose(true, 0)).toBeObservableValueAndClose(true)
   },
 )
 
-mtest(
+marbleTest(
   'toBeObservableValueAndError matches a value followed by an error',
   ({ expect, coldStepAndError }) => {
     expect(coldStepAndError(true, new Error('test error'), 0)).toBeObservableValueAndError(
@@ -141,14 +153,14 @@ mtest(
   },
 )
 
-mtest(
+marbleTest(
   'toBeObservableValueOrUndefined matches a stream carrying undefined frames',
   ({ expect, coldValueOrUndefined }) => {
     expect(coldValueOrUndefined('-v0', true)).toBeObservableValueOrUndefined('-v0', true)
   },
 )
 
-mtest(
+marbleTest(
   'toBeObservableStep matches a value delayed by a number of frames',
   ({ expect, coldStep }) => {
     expect(coldStep(true)).toBeObservableStep(true)
@@ -156,7 +168,7 @@ mtest(
   },
 )
 
-mtest(
+marbleTest(
   'toBeObservableStepAndClose matches a delayed value followed by completion',
   ({ expect, coldStepAndClose }) => {
     expect(coldStepAndClose(true)).toBeObservableStepAndClose(true)
@@ -164,7 +176,7 @@ mtest(
   },
 )
 
-mtest(
+marbleTest(
   'toBeObservableError matches an error delayed by a number of frames',
   ({ expect, coldError }) => {
     expect(coldError(new Error('test error'))).toBeObservableError(new Error('test error'))
@@ -172,7 +184,7 @@ mtest(
   },
 )
 
-mtest(
+marbleTest(
   'toBeObservableStepAndError matches a delayed value followed by an error',
   ({ expect, coldStepAndError }) => {
     expect(coldStepAndError(true, new Error('test error'))).toBeObservableStepAndError(

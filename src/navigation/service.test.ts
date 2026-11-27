@@ -1,6 +1,6 @@
 import { createNavigationService } from './service.ts'
 
-import { mtest } from '@dungarees/core/marbles-vitest.ts'
+import { marbleTest } from '@dungarees/core/marbles-vitest.ts'
 
 import { createMemoryHistory } from 'history'
 import { expect, test } from 'vitest'
@@ -42,20 +42,23 @@ test('pushing a different path adds a history entry', () => {
   expect(history.index).toBe(1)
 })
 
-mtest('the location stream reports where it is and then every change', ({ expect, coldCall }) => {
-  const history = createMemoryHistory()
-  const navigation = createNavigationService(history)
-  coldCall('-hl', {
-    h: () => {
-      history.push(LATEST_LOCATION)
-    },
-    l: () => {
-      navigation.push(LATEST_LOCATION)
-    },
-  })
+marbleTest(
+  'the location stream reports where it is and then every change',
+  ({ expect, coldCall }) => {
+    const history = createMemoryHistory()
+    const navigation = createNavigationService(history)
+    coldCall('-hl', {
+      h: () => {
+        history.push(LATEST_LOCATION)
+      },
+      l: () => {
+        navigation.push(LATEST_LOCATION)
+      },
+    })
 
-  expect(navigation.location$).toBeObservable('01', {
-    0: DEFAULT_LOCATION,
-    1: LATEST_LOCATION,
-  })
-})
+    expect(navigation.location$).toBeObservable('01', {
+      0: DEFAULT_LOCATION,
+      1: LATEST_LOCATION,
+    })
+  },
+)

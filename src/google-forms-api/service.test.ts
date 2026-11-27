@@ -6,14 +6,14 @@ import {
 import { createGoogleFormsService } from './service.ts'
 import { createStubGoogleFormsApi } from './stub.ts'
 
-import { mtest } from '@dungarees/core/marbles-vitest.ts'
+import { marbleTest } from '@dungarees/core/marbles-vitest.ts'
 
 import { firstValueFrom } from 'rxjs'
 import { expect, test } from 'vitest'
 
 const ANSWERS = { question1: 'answer1' }
 
-mtest('saving answers reports that the form was accepted', ({ expect }) => {
+marbleTest('saving answers reports that the form was accepted', ({ expect }) => {
   const service = createGoogleFormsService(
     createStubGoogleFormsApi([{ formId: 'formId', answers: ANSWERS }]),
   )
@@ -33,7 +33,7 @@ test('saving answers to a form the stub does not know about fails', async () => 
   ).rejects.toThrow('No stubbed endpoint matches the request')
 })
 
-mtest('the stub tells two forms apart', ({ expect }) => {
+marbleTest('the stub tells two forms apart', ({ expect }) => {
   const service = createGoogleFormsService(
     createStubGoogleFormsApi([
       { formId: 'first', answers: { a: '1' } },

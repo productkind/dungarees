@@ -1,13 +1,13 @@
 import { createSubProcessService } from './service.ts'
 import { createStubSpawn } from './stub.ts'
 
-import { mtest } from '@dungarees/core/marbles-vitest.ts'
+import { marbleTest } from '@dungarees/core/marbles-vitest.ts'
 
 import { spawn } from 'node:child_process'
 import { firstValueFrom } from 'rxjs'
 import { expect, test } from 'vitest'
 
-mtest('subProcessService.$stdout', ({ expect }) => {
+marbleTest('subProcessService.$stdout', ({ expect }) => {
   const { spawn: fakeSpawn } = createStubSpawn([
     {
       command: 'ls',
@@ -22,7 +22,7 @@ mtest('subProcessService.$stdout', ({ expect }) => {
   })
 })
 
-mtest('subProcessService.$stderr', ({ expect }) => {
+marbleTest('subProcessService.$stderr', ({ expect }) => {
   const { spawn: fakeSpawn } = createStubSpawn([
     {
       command: 'ls',
@@ -38,7 +38,7 @@ mtest('subProcessService.$stderr', ({ expect }) => {
   })
 })
 
-mtest('subProcessService.$exitCode', ({ expect }) => {
+marbleTest('subProcessService.$exitCode', ({ expect }) => {
   const { spawn: fakeSpawn } = createStubSpawn([
     {
       command: 'ls',
@@ -53,7 +53,7 @@ mtest('subProcessService.$exitCode', ({ expect }) => {
   })
 })
 
-mtest('subProcessService.$output', ({ expect }) => {
+marbleTest('subProcessService.$output', ({ expect }) => {
   const { spawn: fakeSpawn } = createStubSpawn([
     {
       command: 'ls',
@@ -73,7 +73,7 @@ mtest('subProcessService.$output', ({ expect }) => {
   })
 })
 
-mtest('subProcessService.$output no error', ({ expect }) => {
+marbleTest('subProcessService.$output no error', ({ expect }) => {
   const { spawn: fakeSpawn } = createStubSpawn([
     {
       command: 'ls',
@@ -92,7 +92,7 @@ mtest('subProcessService.$output no error', ({ expect }) => {
   })
 })
 
-mtest('subProcessService $executedCommands', ({ expect }) => {
+marbleTest('subProcessService $executedCommands', ({ expect }) => {
   const { spawn: fakeSpawn, $executedCommands } = createStubSpawn([
     {
       command: 'ls',

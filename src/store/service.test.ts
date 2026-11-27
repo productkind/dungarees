@@ -3,7 +3,7 @@ import { createStore, createStoreSlice, identityReducer } from './service.ts'
 import type { Reducer } from './service.ts'
 
 import type { DomainEvent } from '@dungarees/core/event.ts'
-import { mtest } from '@dungarees/core/marbles-vitest.ts'
+import { marbleTest } from '@dungarees/core/marbles-vitest.ts'
 import { recordValuesFrom } from '@dungarees/rxjs/util.ts'
 
 import { of } from 'rxjs'
@@ -56,13 +56,13 @@ const createAppendSlice = () =>
     },
   })
 
-mtest('a new store emits the initial state its reducers declare', ({ expect }) => {
+marbleTest('a new store emits the initial state its reducers declare', ({ expect }) => {
   const store = createStore<AllCountState, AllEvents>({ count: countReducer })
 
   expect(store.state$).toBeObservable('0', { 0: { count: 0 } })
 })
 
-mtest('a store reduces an event that was sent to it', ({ expect }) => {
+marbleTest('a store reduces an event that was sent to it', ({ expect }) => {
   const store = createStore<AllCountState, AllEvents>({ count: countReducer })
 
   store.send({ type: 'count/increment', payload: undefined })
@@ -70,7 +70,7 @@ mtest('a store reduces an event that was sent to it', ({ expect }) => {
   expect(store.state$).toBeObservable('1', { 1: { count: 1 } })
 })
 
-mtest('a store reduces the payload of an event that carries one', ({ expect }) => {
+marbleTest('a store reduces the payload of an event that carries one', ({ expect }) => {
   const store = createStore<AllCountState, AllEvents>({ count: countReducer })
 
   store.send({ type: 'count/incrementAmount', payload: 5 })
@@ -78,7 +78,7 @@ mtest('a store reduces the payload of an event that carries one', ({ expect }) =
   expect(store.state$).toBeObservable('5', { 5: { count: 5 } })
 })
 
-mtest('a store ignores an event none of its reducers handle', ({ expect }) => {
+marbleTest('a store ignores an event none of its reducers handle', ({ expect }) => {
   const store = createStore<AllCountState, AllEvents>({ count: countReducer })
 
   store.send({ type: 'count/start', payload: undefined })
@@ -140,7 +140,7 @@ test('createStoreSlice rejects a payload of the wrong type', () => {
   slice.eventCreators.incrementAmount('5')
 })
 
-mtest('a store combines the slices it was built from', ({ expect }) => {
+marbleTest('a store combines the slices it was built from', ({ expect }) => {
   const countSlice = createCountSlice()
   const appendSlice = createAppendSlice()
   const store = createStore<AllTestState, AllEvents>({
@@ -154,7 +154,7 @@ mtest('a store combines the slices it was built from', ({ expect }) => {
   expect(store.state$).toBeObservable('1', { 1: { count: 1, append: 'A' } })
 })
 
-mtest('a registered effect turns one event into another', ({ expect }) => {
+marbleTest('a registered effect turns one event into another', ({ expect }) => {
   const store = createStore<AllCountState, AllEvents>({ count: countReducer })
   store.registerEffect((event$) =>
     event$.pipe(
@@ -168,7 +168,7 @@ mtest('a registered effect turns one event into another', ({ expect }) => {
   expect(store.state$).toBeObservable('3', { 3: { count: 3 } })
 })
 
-mtest('an effect keeps running after it has recovered from an error', ({ expect }) => {
+marbleTest('an effect keeps running after it has recovered from an error', ({ expect }) => {
   const store = createStore<AllCountState, AllEvents>({ count: countReducer })
   store.registerEffect((event$) =>
     event$.pipe(
@@ -189,7 +189,7 @@ mtest('an effect keeps running after it has recovered from an error', ({ expect 
   expect(store.state$).toBeObservable('2', { 2: { count: 2 } })
 })
 
-mtest('an event emitted by one effect feeds the next', ({ expect }) => {
+marbleTest('an event emitted by one effect feeds the next', ({ expect }) => {
   const store = createStore<AllCountState, AllEvents>({ count: countReducer })
   store.registerEffect((event$) =>
     event$.pipe(
@@ -209,7 +209,7 @@ mtest('an event emitted by one effect feeds the next', ({ expect }) => {
   expect(store.state$).toBeObservable('2', { 2: { count: 2 } })
 })
 
-mtest('an effect can read the current state', ({ expect }) => {
+marbleTest('an effect can read the current state', ({ expect }) => {
   const store = createStore<AllCountState, AllEvents>({
     count: (state: CountState = 1, event: AllEvents) => countReducer(state, event),
   })
@@ -226,7 +226,7 @@ mtest('an effect can read the current state', ({ expect }) => {
   expect(store.state$).toBeObservable('2', { 2: { count: 2 } })
 })
 
-mtest('a source effect emits events of its own accord', ({ expect }) => {
+marbleTest('a source effect emits events of its own accord', ({ expect }) => {
   const store = createStore<AllCountState, AllEvents>({
     count: (state: CountState = 2, event: AllEvents) => countReducer(state, event),
   })
@@ -258,7 +258,7 @@ test('exportState hands back the state as a plain object', () => {
   expect(store.exportState()).toEqual({ count: 1, append: 'A' })
 })
 
-mtest('importState replaces the whole state, and events reduce on top of it', ({ expect }) => {
+marbleTest('importState replaces the whole state, and events reduce on top of it', ({ expect }) => {
   const countSlice = createCountSlice()
   const appendSlice = createAppendSlice()
   const store = createStore<AllTestState, AllEvents>({
@@ -273,20 +273,23 @@ mtest('importState replaces the whole state, and events reduce on top of it', ({
   expect(store.state$).toBeObservable('1', { 1: { count: 3, append: 'BA' } })
 })
 
-mtest('in rehydrate mode events sent before the import are replayed after it', ({ expect }) => {
-  const countSlice = createCountSlice()
-  const appendSlice = createAppendSlice()
-  const store = createStore<AllTestState, AllEvents>(
-    { count: countSlice.reducer, append: appendSlice.reducer },
-    { rehydrateMode: true },
-  )
+marbleTest(
+  'in rehydrate mode events sent before the import are replayed after it',
+  ({ expect }) => {
+    const countSlice = createCountSlice()
+    const appendSlice = createAppendSlice()
+    const store = createStore<AllTestState, AllEvents>(
+      { count: countSlice.reducer, append: appendSlice.reducer },
+      { rehydrateMode: true },
+    )
 
-  store.send(countSlice.eventCreators.increment())
-  store.send(appendSlice.eventCreators.appendA())
-  store.importState({ count: 2, append: 'B' })
+    store.send(countSlice.eventCreators.increment())
+    store.send(appendSlice.eventCreators.appendA())
+    store.importState({ count: 2, append: 'B' })
 
-  expect(store.state$).toBeObservable('1', { 1: { count: 3, append: 'BA' } })
-})
+    expect(store.state$).toBeObservable('1', { 1: { count: 3, append: 'BA' } })
+  },
+)
 
 test('identityReducer hands back the very state it was given', () => {
   const state = { count: 1 }

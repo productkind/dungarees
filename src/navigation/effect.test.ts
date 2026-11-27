@@ -2,7 +2,7 @@ import { navigationEffect } from './effect.ts'
 import { createFakeNavigationService } from './fake.ts'
 import { createAppNavigation, createChangeLocation, createPlatformNavigation } from './store.ts'
 
-import { mtest } from '@dungarees/core/marbles-vitest.ts'
+import { marbleTest } from '@dungarees/core/marbles-vitest.ts'
 
 import { of } from 'rxjs'
 
@@ -12,7 +12,7 @@ const DEFAULT_LOCATION = { pathname: '/', search: '', hash: '' }
 
 const LOCATION = { pathname: '/hello', search: 'a=1&b=2', hash: 'some' }
 
-mtest('an app navigation turns into a location change', ({ expect, cold }) => {
+marbleTest('an app navigation turns into a location change', ({ expect, cold }) => {
   const effect = navigationEffect(createFakeNavigationService())
   const event$ = cold('-s', { s: createAppNavigation(LOCATION) })
 
@@ -21,7 +21,7 @@ mtest('an app navigation turns into a location change', ({ expect, cold }) => {
   })
 })
 
-mtest('an app navigation is pushed to the platform as well', ({ expect, cold }) => {
+marbleTest('an app navigation is pushed to the platform as well', ({ expect, cold }) => {
   const navigationService = createFakeNavigationService()
   const effect = navigationEffect(navigationService)
   const event$ = cold('-s', { s: createAppNavigation(LOCATION) })
@@ -35,14 +35,14 @@ mtest('an app navigation is pushed to the platform as well', ({ expect, cold }) 
   })
 })
 
-mtest('the app navigation effect ignores an event of another type', ({ expect, cold }) => {
+marbleTest('the app navigation effect ignores an event of another type', ({ expect, cold }) => {
   const effect = navigationEffect(createFakeNavigationService())
   const event$ = cold('-s', { s: createPlatformNavigation(LOCATION) })
 
   expect(effect.handleAppNavigation(event$, STATE$)).toBeObservable('--')
 })
 
-mtest('a platform navigation is announced and then changes the location', ({ expect }) => {
+marbleTest('a platform navigation is announced and then changes the location', ({ expect }) => {
   const effect = navigationEffect(createFakeNavigationService())
 
   expect(effect.handlePlatformNavigation(STATE$)).toBeObservable('(pc)', {

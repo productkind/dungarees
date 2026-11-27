@@ -16,7 +16,7 @@
     "react": "^19.1.0",
     "rxjs-marbles": "^7.0.1",
     "typescript": "^5.9.3",
-    "vitest": "^3.0.2"
+    "vitest": "^5.1.2"
   },
   "author": "info@productkind.com",
   "repository": {
@@ -31,6 +31,6 @@
   },
   "peerDependencies": {
     "rxjs-marbles": "^7.0.1",
-    "vitest": "^3.0.2"
+    "vitest": "^5.1.2"
   }
 }

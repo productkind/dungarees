@@ -10,7 +10,7 @@ import { SCENARIO_ACTIONS } from './scenario.ts'
 import { createScenarioService } from './service.ts'
 import { createStubScenarioApi, STUB_SCENARIO } from './stub.ts'
 
-import { mtest } from '@dungarees/core/marbles-vitest.ts'
+import { marbleTest } from '@dungarees/core/marbles-vitest.ts'
 
 import { firstValueFrom } from 'rxjs'
 import { expect, test } from 'vitest'
@@ -20,25 +20,25 @@ const AUTH = { accessToken: '12345', organizationId: '1' }
 const createService = (): ReturnType<typeof createScenarioService> =>
   createScenarioService(createStubScenarioApi())
 
-mtest('getAllScenarios lists the scenarios Make answered with', ({ expect }) => {
+marbleTest('getAllScenarios lists the scenarios Make answered with', ({ expect }) => {
   expect(createService().getAllScenarios(AUTH)).toBeObservable('-(s|)', {
     s: [STUB_SCENARIO],
   })
 })
 
-mtest('getScenarioById returns the scenario that was asked for', ({ expect }) => {
+marbleTest('getScenarioById returns the scenario that was asked for', ({ expect }) => {
   expect(
     createService().getScenarioById({ accessToken: AUTH.accessToken, scenarioId: 1 }),
   ).toBeObservable('-(s|)', { s: STUB_SCENARIO })
 })
 
-mtest('startScenario reports the scenario as linked', ({ expect }) => {
+marbleTest('startScenario reports the scenario as linked', ({ expect }) => {
   expect(
     createService().startScenario({ accessToken: AUTH.accessToken, scenarioId: 1 }),
   ).toBeObservable('-(s|)', { s: { id: 1, islinked: true } })
 })
 
-mtest('stopScenario reports the scenario as unlinked', ({ expect }) => {
+marbleTest('stopScenario reports the scenario as unlinked', ({ expect }) => {
   expect(
     createService().stopScenario({ accessToken: AUTH.accessToken, scenarioId: 1 }),
   ).toBeObservable('-(s|)', { s: { id: 1, islinked: false } })

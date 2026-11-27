@@ -1,7 +1,7 @@
 import { filterByType } from './effect.ts'
 
 import type { DomainEvent } from '@dungarees/core/event.ts'
-import { mtest } from '@dungarees/core/marbles-vitest.ts'
+import { marbleTest } from '@dungarees/core/marbles-vitest.ts'
 
 import type { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
@@ -11,7 +11,7 @@ type Started = DomainEvent<'event-1', number>
 type Finished = DomainEvent<'event-2', undefined>
 type AllEvents = Started | Finished
 
-mtest('filterByType keeps only the events of the selected type', ({ expect, cold }) => {
+marbleTest('filterByType keeps only the events of the selected type', ({ expect, cold }) => {
   const event$: Observable<AllEvents> = cold('-12', {
     1: { type: 'event-1', payload: 1 },
     2: { type: 'event-2', payload: undefined },
@@ -25,7 +25,7 @@ mtest('filterByType keeps only the events of the selected type', ({ expect, cold
   expect(filtered$).toBeObservable('-1-', { 1: 1 })
 })
 
-mtest('filterByType passes nothing on when no event matches', ({ expect, cold }) => {
+marbleTest('filterByType passes nothing on when no event matches', ({ expect, cold }) => {
   const event$: Observable<AllEvents> = cold('-2', { 2: { type: 'event-2', payload: undefined } })
 
   expect(event$.pipe(filterByType('event-1'))).toBeObservable('--')

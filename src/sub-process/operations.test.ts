@@ -3,7 +3,7 @@ import { createSubProcessService } from './service.ts'
 import { createStubSpawn } from './stub.ts'
 
 import { stderr, stdout } from '@dungarees/cli/message.ts'
-import { mtest } from '@dungarees/core/marbles-vitest.ts'
+import { marbleTest } from '@dungarees/core/marbles-vitest.ts'
 import { createFakeFileSystem } from '@dungarees/fs/fake.ts'
 import { createMemoryRawKeyValueStore } from '@dungarees/key-value-store/raw-stores/memory.ts'
 import { createKeyValueStore } from '@dungarees/key-value-store/service.ts'
@@ -24,7 +24,7 @@ const createEnvironment = (path: string) => {
   return environment
 }
 
-mtest('subProcessOperations.runSilentUntilError no output if no error', ({ expect }) => {
+marbleTest('subProcessOperations.runSilentUntilError no output if no error', ({ expect }) => {
   const { spawn: fakeSpawn } = createStubSpawn([
     {
       command: 'ls',
@@ -44,7 +44,7 @@ mtest('subProcessOperations.runSilentUntilError no output if no error', ({ expec
   expect(output).toBeObservableStepAndClose([])
 })
 
-mtest('subProcessOperations.runSilentUntilError both output on error', ({ expect }) => {
+marbleTest('subProcessOperations.runSilentUntilError both output on error', ({ expect }) => {
   const { spawn: fakeSpawn } = createStubSpawn([
     {
       command: 'ls',
@@ -65,7 +65,7 @@ mtest('subProcessOperations.runSilentUntilError both output on error', ({ expect
   expect(output).toBeObservableStepAndClose([stdout('file.ts'), stderr('Error')])
 })
 
-mtest(
+marbleTest(
   'subProcessOperations.isExecutableFile is true if the file has executable permissions',
   ({ expect }) => {
     const fileSystem = createFakeFileSystem({
@@ -84,7 +84,7 @@ mtest(
   },
 )
 
-mtest('subProcessOperations.isExecutableFile is false if directory', ({ expect }) => {
+marbleTest('subProcessOperations.isExecutableFile is false if directory', ({ expect }) => {
   const fileSystem = createFakeFileSystem()
   fileSystem.mkdirSync('/exec-world')
   fileSystem.chmodSync('/exec-world', ALL_EXECUTE)
@@ -99,7 +99,7 @@ mtest('subProcessOperations.isExecutableFile is false if directory', ({ expect }
   expect(output).toBeObservableStepAndClose(false)
 })
 
-mtest(
+marbleTest(
   'subProcessOperations.isExecutableFile is false if there are no executable permissions',
   ({ expect }) => {
     const fileSystem = createFakeFileSystem({
@@ -118,7 +118,7 @@ mtest(
   },
 )
 
-// These tests use `test` + `lastValueFrom` instead of `mtest` because memfs
+// These tests use `test` + `lastValueFrom` instead of `marbleTest` because memfs
 // Node.canExecute() uses the global process.getuid, not the instance-level one,
 // so we still need to monkey-patch the global process for permission checks.
 test('subProcessOperations.isExecutableFile is false for user-executable file when called by non-owner', async () => {

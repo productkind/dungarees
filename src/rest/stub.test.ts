@@ -3,7 +3,7 @@ import type { Fetcher, RestClient } from './service.ts'
 import type { StubEndpoint } from './stub.ts'
 import { createStubRestClient } from './stub.ts'
 
-import { mtest } from '@dungarees/core/marbles-vitest.ts'
+import { marbleTest } from '@dungarees/core/marbles-vitest.ts'
 
 import type { Observable } from 'rxjs'
 import { expect, test } from 'vitest'
@@ -87,7 +87,7 @@ const SEARCH_B: Record<'b', string> = { b: '1' } as const
 const HEADERS_1: Record<'header-1', 'value-1'> = { 'header-1': 'value-1' } as const
 const HEADERS_2: Record<'header-1', 'value-2'> = { 'header-1': 'value-2' } as const
 
-mtest('the stub stands in for a client and answers the matching endpoint', ({ expect }) => {
+marbleTest('the stub stands in for a client and answers the matching endpoint', ({ expect }) => {
   const consume = (
     client: RestClient<Fetcher<ResponseA>, GetSearchAHeader1>,
   ): Observable<ResponseA> =>
@@ -103,7 +103,7 @@ mtest('the stub stands in for a client and answers the matching endpoint', ({ ex
   ).toBeObservable('-(a|)', { a: { a: 1 } })
 })
 
-mtest('the stub picks the endpoint whose headers match', ({ expect }) => {
+marbleTest('the stub picks the endpoint whose headers match', ({ expect }) => {
   const client = createStubRestClient<Api, typeof ALL_ENDPOINTS>(ALL_ENDPOINTS)
 
   const response = client({
@@ -119,7 +119,7 @@ mtest('the stub picks the endpoint whose headers match', ({ expect }) => {
   expect(response).toBeObservable('-(d|)', { d: { d: 1 } })
 })
 
-mtest('the stub picks the endpoint whose search matches', ({ expect }) => {
+marbleTest('the stub picks the endpoint whose search matches', ({ expect }) => {
   const client = createStubRestClient<Api, typeof ALL_ENDPOINTS>(ALL_ENDPOINTS)
 
   const response = client({
@@ -135,7 +135,7 @@ mtest('the stub picks the endpoint whose search matches', ({ expect }) => {
   expect(response).toBeObservable('-(c|)', { c: { c: 1 } })
 })
 
-mtest('the stub picks the endpoint whose method matches', ({ expect }) => {
+marbleTest('the stub picks the endpoint whose method matches', ({ expect }) => {
   type Get = RestEndpoint<{ method: 'GET'; pathname: '/path' }, ResponseA>
   type Post = RestEndpoint<{ method: 'POST'; pathname: '/path' }, ResponseB>
   const getEndpoint: StubEndpoint<Get> = {
@@ -157,7 +157,7 @@ mtest('the stub picks the endpoint whose method matches', ({ expect }) => {
   expect(response).toBeObservable('-(b|)', { b: { b: 1 } })
 })
 
-mtest('the stub picks the endpoint whose pathname matches', ({ expect }) => {
+marbleTest('the stub picks the endpoint whose pathname matches', ({ expect }) => {
   type First = RestEndpoint<{ method: 'GET'; pathname: '/path' }, ResponseA>
   type Second = RestEndpoint<{ method: 'GET'; pathname: '/path2' }, ResponseB>
   const first: StubEndpoint<First> = {
@@ -179,7 +179,7 @@ mtest('the stub picks the endpoint whose pathname matches', ({ expect }) => {
   expect(response).toBeObservable('-(b|)', { b: { b: 1 } })
 })
 
-mtest('the stub waits the delay the endpoint asked for', ({ expect }) => {
+marbleTest('the stub waits the delay the endpoint asked for', ({ expect }) => {
   type Endpoint = RestEndpoint<{ method: 'GET'; pathname: '/path' }, ResponseA>
   const delayed: StubEndpoint<Endpoint> = {
     request: { method: 'GET', pathname: '/path' },
@@ -194,7 +194,7 @@ mtest('the stub waits the delay the endpoint asked for', ({ expect }) => {
   })
 })
 
-mtest('the stub reports an endpoint whose response is an Error as a failure', ({ expect }) => {
+marbleTest('the stub reports an endpoint whose response is an Error as a failure', ({ expect }) => {
   type Endpoint = RestEndpoint<{ method: 'GET'; pathname: '/path' }, ResponseA | Error>
   const failure = new Error('gateway timeout')
   const failing: StubEndpoint<Endpoint> = {
@@ -207,7 +207,7 @@ mtest('the stub reports an endpoint whose response is an Error as a failure', ({
   expect(client({ method: 'GET', pathname: '/path' } as const)).toBeObservable('-#', {}, failure)
 })
 
-mtest('the stub answers an endpoint that was stubbed with undefined', ({ expect }) => {
+marbleTest('the stub answers an endpoint that was stubbed with undefined', ({ expect }) => {
   type Endpoint = RestEndpoint<{ method: 'GET'; pathname: '/path' }, undefined>
   const undefinedResponse: StubEndpoint<Endpoint> = {
     request: { method: 'GET', pathname: '/path' },

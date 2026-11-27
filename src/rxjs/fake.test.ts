@@ -1,10 +1,10 @@
 import { createGetTransformSetContextInspector } from './fake.ts'
 
-import { mtest } from '@dungarees/core/marbles-vitest.ts'
+import { marbleTest } from '@dungarees/core/marbles-vitest.ts'
 
 import { map } from 'rxjs'
 
-mtest(
+marbleTest(
   'createGetTransformSetContextInspector created with get and set',
   ({ expect, coldStepAndClose }) => {
     const [transformer, contentInspector$] = createGetTransformSetContextInspector<
@@ -29,7 +29,7 @@ mtest(
   },
 )
 
-mtest('createGetTransformSetContextInspector created with content', ({ expect }) => {
+marbleTest('createGetTransformSetContextInspector created with content', ({ expect }) => {
   const [transformer, contentInspector$] = createGetTransformSetContextInspector<
     string,
     string,

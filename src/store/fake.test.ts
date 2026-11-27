@@ -3,7 +3,7 @@ import { createStoreSlice } from './service.ts'
 import type { Reducer } from './service.ts'
 
 import type { DomainEvent } from '@dungarees/core/event.ts'
-import { mtest } from '@dungarees/core/marbles-vitest.ts'
+import { marbleTest } from '@dungarees/core/marbles-vitest.ts'
 
 import { map } from 'rxjs/operators'
 import { expect, test } from 'vitest'
@@ -32,7 +32,7 @@ test('STORE_INIT is an event no reducer is expected to handle', () => {
   expect(STORE_INIT).toEqual({ type: 'init', payload: undefined })
 })
 
-mtest('getStateReadable presents slice state as the whole store state', ({ expect, cold }) => {
+marbleTest('getStateReadable presents slice state as the whole store state', ({ expect, cold }) => {
   const { getStateReadable } = createStoreTools({ namespace: 'count', reducer: countReducer })
 
   const { state$ } = getStateReadable(cold('s', { s: { count: 7, label: 'seven' } }))
@@ -40,17 +40,20 @@ mtest('getStateReadable presents slice state as the whole store state', ({ expec
   expect(state$).toBeObservable('s', { s: { count: { count: 7, label: 'seven' } } })
 })
 
-mtest('getStateReadable lets a test supply only the state it cares about', ({ expect, cold }) => {
-  const { getStateReadable } = createStoreTools({ namespace: 'count', reducer: countReducer })
+marbleTest(
+  'getStateReadable lets a test supply only the state it cares about',
+  ({ expect, cold }) => {
+    const { getStateReadable } = createStoreTools({ namespace: 'count', reducer: countReducer })
 
-  const count$ = getStateReadable(cold('s', { s: { count: 7 } })).state$.pipe(
-    map(({ count }) => count.count),
-  )
+    const count$ = getStateReadable(cold('s', { s: { count: 7 } })).state$.pipe(
+      map(({ count }) => count.count),
+    )
 
-  expect(count$).toBeObservable('s', { s: 7 })
-})
+    expect(count$).toBeObservable('s', { s: 7 })
+  },
+)
 
-mtest('createAppStore builds a store namespaced under the slice name', ({ expect }) => {
+marbleTest('createAppStore builds a store namespaced under the slice name', ({ expect }) => {
   const { createAppStore } = createStoreTools({ namespace: 'count', reducer: countReducer })
 
   const { store } = createAppStore()
@@ -58,7 +61,7 @@ mtest('createAppStore builds a store namespaced under the slice name', ({ expect
   expect(store.state$).toBeObservable('s', { s: { count: { count: 0, label: 'none' } } })
 })
 
-mtest('createAppStore exposes the slice state on its own', ({ expect }) => {
+marbleTest('createAppStore exposes the slice state on its own', ({ expect }) => {
   const { createAppStore } = createStoreTools({ namespace: 'count', reducer: countReducer })
 
   const { sliceState$ } = createAppStore()
@@ -66,7 +69,7 @@ mtest('createAppStore exposes the slice state on its own', ({ expect }) => {
   expect(sliceState$).toBeObservable('s', { s: { count: 0, label: 'none' } })
 })
 
-mtest('a store from createAppStore reduces the events sent to it', ({ expect }) => {
+marbleTest('a store from createAppStore reduces the events sent to it', ({ expect }) => {
   const { createAppStore } = createStoreTools({ namespace: 'count', reducer: countReducer })
   const { sliceState$, store } = createAppStore()
 
