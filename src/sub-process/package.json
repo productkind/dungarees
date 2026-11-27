@@ -8,12 +8,12 @@
   },
   "type": "module",
   "dependencies": {
-    "@dungarees/core": "*",
     "@dungarees/cli": "*",
+    "@dungarees/core": "*",
     "@dungarees/fs": "*",
     "@dungarees/key-value-store": "*",
     "rxjs": "^7.8.1",
-    "zod": "^3.25.76"
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "typescript": "^5.9.3",

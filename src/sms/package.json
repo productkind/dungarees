@@ -11,7 +11,7 @@
     "@dungarees/core": "*",
     "rxjs": "^7.8.1",
     "twilio": "^6.3.1",
-    "zod": "^3.25.76"
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "typescript": "^5.9.3",

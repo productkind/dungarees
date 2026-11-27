@@ -237,7 +237,7 @@ const setPackageJsonVersion = (
       version: version || packageJson['version'],
     })),
     assertSchemaMap(
-      z.object({ version: z.string().min(1) }).merge(DUNGAREES_SETTINGS_SCHEMA),
+      z.object({ version: z.string().min(1) }).extend(DUNGAREES_SETTINGS_SCHEMA.shape),
       'Version is required in package.json or as an argument',
     ),
   )

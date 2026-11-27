@@ -1,14 +1,14 @@
 import type { GetAllPaths, GetGuarded, GetValueByPath, Guard } from '@dungarees/core/type-util.ts'
 import { join, split } from '@dungarees/core/util.ts'
 
-import { z, type ZodObject, type ZodRawShape, type ZodSchema, type ZodType } from 'zod'
+import { z, type ZodObject, type ZodRawShape, type ZodType } from 'zod'
 
-export type GetSchemaType<SCHEMA = ZodSchema> = SCHEMA extends ZodSchema<infer TYPE> ? TYPE : never
+export type GetSchemaType<SCHEMA = ZodType> = SCHEMA extends ZodType<infer TYPE> ? TYPE : never
 
 export const zodGuard = <GUARD extends Guard>(
   guard: GUARD,
   message?: string,
-): ZodSchema<GetGuarded<GUARD>> => {
+): ZodType<GetGuarded<GUARD>> => {
   return z.custom<GetGuarded<GUARD>>(guard, message)
 }
 
@@ -16,13 +16,13 @@ const isObjectSchema = (schema: ZodType<unknown>): schema is ZodObject<ZodRawSha
   'shape' in schema
 
 export const getSchemaByObjectPath = <
-  const SCHEMA extends ZodSchema,
+  const SCHEMA extends ZodType,
   const PATH extends (GetAllPaths<GetSchemaType<SCHEMA>> & string) | '',
 >(
   schema: SCHEMA,
   path: PATH,
-): ZodSchema<GetValueByPath<GetSchemaType<SCHEMA>, PATH>> => {
-  return _getSchemaByObjectPathHelper(schema, path) as ZodSchema<
+): ZodType<GetValueByPath<GetSchemaType<SCHEMA>, PATH>> => {
+  return _getSchemaByObjectPathHelper(schema, path) as ZodType<
     GetValueByPath<GetSchemaType<SCHEMA>, PATH>
   >
 }

@@ -50,10 +50,10 @@ export type DependencyFindings = {
 
 const MANIFEST = z.object({
   name: z.string(),
-  dependencies: z.record(z.string()).optional(),
-  devDependencies: z.record(z.string()).optional(),
-  peerDependencies: z.record(z.string()).optional(),
-  scripts: z.record(z.string()).optional(),
+  dependencies: z.record(z.string(), z.string()).optional(),
+  devDependencies: z.record(z.string(), z.string()).optional(),
+  peerDependencies: z.record(z.string(), z.string()).optional(),
+  scripts: z.record(z.string(), z.string()).optional(),
 })
 
 // TypeScript's own scanner, so specifiers quoted inside template literals, strings and comments

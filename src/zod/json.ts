@@ -3,8 +3,6 @@ import type { JsonObject, JsonType } from '@dungarees/core/type-util.ts'
 
 import { z, type ZodError, type ZodType } from 'zod'
 
-// Constrained on the parsed type rather than on `ZodSchema`, which zod aliases to
-// `ZodType<any, …>` — that would make `parsed.data` an `any` and lose the whole point.
 // The two ways this fails need not read alike: malformed JSON is best reported with the parser's
 // own complaint appended, while a wrong shape often has a better sentence than zod's issue list.
 export const parseJson = <PARSED>({
@@ -33,12 +31,12 @@ export const jsonSchema: ZodType<JsonType> = z.lazy(() =>
     z.null(),
     z.undefined(),
     z.array(jsonSchema),
-    z.record(jsonSchema),
+    z.record(z.string(), jsonSchema),
   ]),
 )
 
 // z.record rejects arrays and null, so this matches the type rather than just `typeof === 'object'`.
-export const jsonObjectSchema: ZodType<JsonObject> = z.record(jsonSchema)
+export const jsonObjectSchema: ZodType<JsonObject> = z.record(z.string(), jsonSchema)
 
 // JSON.parse is typed `any`; returning `unknown` forces the schema to be what narrows it.
 const jsonTextToValue = ({ json, message }: { json: string; message: string }): unknown => {

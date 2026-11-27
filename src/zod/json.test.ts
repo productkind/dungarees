@@ -22,7 +22,9 @@ test('parseJson throws when the JSON parses but does not match the schema', () =
       schema: z.object({ children: z.object({ Version: z.string() }) }),
       message: 'Unexpected workspace info',
     }),
-  ).toThrow('Unexpected workspace info: children.Version: Expected string, received number')
+  ).toThrow(
+    'Unexpected workspace info: children.Version: Invalid input: expected string, received number',
+  )
 })
 
 test('parseJson throws when the text is not JSON at all, keeping the cause', () => {
@@ -40,7 +42,7 @@ test('parseJson throws when the text is not JSON at all, keeping the cause', () 
 
 test('parseJson names the top level when the mismatch has no path', () => {
   expect(() => parseJson({ json: '42', schema: z.string() })).toThrow(
-    'Invalid JSON: Expected string, received number',
+    'Invalid JSON: Invalid input: expected string, received number',
   )
 })
 

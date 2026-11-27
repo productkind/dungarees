@@ -66,7 +66,7 @@ test('KeyValueStoreDeep failed validation in guard', () => {
   })
 
   expect(thrown.message).toBe('Invalid type in store: "key" => {"number":2}')
-  expect(zodIssueCode(thrown)).toBe('invalid_literal')
+  expect(zodIssueCode(thrown)).toBe('invalid_value')
 })
 
 test('KeyValueStoreDeep deep validator', () => {
@@ -113,7 +113,7 @@ test('KeyValueStoreDeep validate all keys', () => {
   })
 
   expect(thrown.message).toBe('Invalid type in store: "key2" => 3')
-  expect(zodIssueCode(thrown)).toBe('invalid_literal')
+  expect(zodIssueCode(thrown)).toBe('invalid_value')
 })
 
 test('KeyValueStoreDeep store throws error', () => {

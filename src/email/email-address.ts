@@ -2,7 +2,7 @@ import type { typeKey } from '@dungarees/core/util.ts'
 
 import { z } from 'zod'
 
-export const emailAddress = z.string().email()
+export const emailAddress = z.email()
 
 export type EmailAddress = z.infer<typeof emailAddress> & { [typeKey]: 'EmailAddress' }
 

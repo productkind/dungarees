@@ -20,7 +20,7 @@ import {
   scan,
   throwError,
 } from 'rxjs'
-import { type ZodSchema } from 'zod'
+import { type ZodType } from 'zod'
 
 export const UNSAFE_MARBLE_TESTING_OBSERVABLE_FUNCTION = Symbol(
   'UNSAFE_MARBLE_TESTING_OBSERVABLE_FUNCTION',
@@ -185,7 +185,7 @@ export const assertTypeByGuardMap = <T>(
   )
 
 export const assertSchemaMap = <T>(
-  schema: ZodSchema<T>,
+  schema: ZodType<T>,
   message: string,
 ): OperatorFunction<unknown, T> =>
   map((value: unknown) => {
